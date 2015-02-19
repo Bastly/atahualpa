@@ -81,6 +81,10 @@ describe('Notify chaski a new client', function() {
         chaski.on('message', function (data) {
             var parsedResponse = JSON.parse(data.toString());
             assert.equal(parsedResponse.id, config.client.id);
+            chaski.close();
+            client.close();
+            chaskiNotifier.close();
+            chaskiAssigner.close();
             done();
         });
 
