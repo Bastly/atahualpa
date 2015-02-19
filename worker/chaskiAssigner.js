@@ -1,7 +1,7 @@
 module.exports = function(opts) {
 
     var zmq = require('zmq');
-    var constants = require('./../constants');
+    var constants = require('../constants');
     var module = {};
     var defaultParams = {};
     var bunyan = require('bunyan');

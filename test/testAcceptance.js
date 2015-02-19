@@ -9,18 +9,13 @@ if(!config.chaski.ip) {
     process.exit(9);
 }
 
-describe('Array', function() {
-    describe('#indexOf()', function() {
-        it('should return -1 when the value is not present', function() {
-            assert.equal(-1, [1, 2, 3].indexOf(5));
-            assert.equal(-1, [1, 2, 3].indexOf(0));
-        });
-    });
-});
-
 describe('Request a chaski worker', function() {
+
     var chaski = zmq.socket('rep');
     var client = zmq.socket('req');
+
+    chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
+    client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_CHASKI_ASSIGNER);
 
     it('message response IP should be equal to CHASKI given IP', function (done) {
 
@@ -36,13 +31,11 @@ describe('Request a chaski worker', function() {
             "verbose" : constants.LOG_LEVEL_ERROR
         });
 
-        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
         chaski.on('message', function(result, data) {
             var parsedResponse = JSON.parse(data);
             console.log(result, data);
         });
         
-        client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_CHASKI_ASSIGNER);
         var dataToSend = { id: config.client.id };
         client.send(JSON.stringify(dataToSend));
 
@@ -53,10 +46,39 @@ describe('Request a chaski worker', function() {
             done();
         });
     });
-
-    after( function (done) {
-        console.log('after test');
-        chaski.close();
-        done();
-    });
 });
+
+describe('Notify chaski a new client', function() {
+    var chaski = zmq.socket('rep');
+    var client = zmq.socket('req');
+
+    it('Notified chaski with cliend given ID', function (done) {
+
+        var chaskiNotifier = require('../worker/chaskiNotifier')
+        ({
+            "ipChaski": config.chaski.ip,
+            "verbose" : constants.LOG_LEVEL_ERROR
+        });
+        var chaskiAssigner = require('../worker/chaskiAssigner')
+        ({
+            "ipChaski": config.chaski.ip,
+            "chaskiNotifier": chaskiNotifier,
+            "verbose" : constants.LOG_LEVEL_ERROR
+        });
+
+        chaski.on('message', function(result, data) {
+            var parsedResponse = JSON.parse(data);
+            console.log(result, data);
+            assert.equal(result, 200);
+            assert.equal(parsedResponse.id, config.client.id);
+            done();
+        });
+        
+        var dataToSend = { id: config.client.id };
+        client.send(JSON.stringify(dataToSend));
+
+        client.on('message', function(result, data) {
+            var parsedResponse = JSON.parse(data);
+        });
+    });
+}); 
