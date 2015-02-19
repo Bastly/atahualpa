@@ -1,0 +1,24 @@
+{
+  "name": "atahualpa",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "bunyan": "^1.3.3",
+    "zmq": "^2.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bastly/atahualpa.git"
+  },
+  "author": "",
+  "license": "AGPL",
+  "bugs": {
+    "url": "https://github.com/Bastly/atahualpa/issues"
+  },
+  "homepage": "https://github.com/Bastly/atahualpa"
+}
