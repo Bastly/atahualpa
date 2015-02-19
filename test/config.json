@@ -1,7 +1,10 @@
 {
-  "api": {
-    "key": "fooKey",
-    "host": "example.com",
-    "port": 9000
-  }
+    "chaski": {
+        "ip": "127.0.0.1",
+        "port": 1337
+    },
+    "client": {
+        "ip": "127.0.0.1",
+        "port": 1337
+    }
 }

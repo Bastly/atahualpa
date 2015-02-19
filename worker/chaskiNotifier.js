@@ -4,8 +4,6 @@ module.exports = function(opts){
     var constants = require('./../constants');
     var module = {};
     var defaultParams = {};
-
-    console.log('initializing chaskiNotifier');
     
     // CHECK
     if(!opts || !opts.ipChaski){

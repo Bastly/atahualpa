@@ -1,9 +1,9 @@
-module.exports = (function(){
-    var module = {};
-    module.PORT_CHASKI_CHANNEL_NOTIFIER = 4444;
-    module.PORT_CHASKI_ASSIGNER = 5555;
-    module.PORT_MESSAGE_RECEIVER = 6666;
-    module.PORT_CHASKIES = 7777;
-    
-    return module;
-})();
+module.exports = {
+    PORT_CHASKI_CHANNEL_NOTIFIER : 4444,
+    PORT_CHASKI_ASSIGNER : 5555,
+    PORT_MESSAGE_RECEIVER : 6666,
+    PORT_CHASKIES : 7777,
+    LOG_LEVEL_DEBUG : 20,
+    LOG_LEVEL_WARN : 40,
+    LOG_LEVEL_ERROR : 50
+}
