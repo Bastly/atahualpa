@@ -17,6 +17,10 @@ module.exports = function(opts) {
     // initialize
     var chaskiAssigner = zmq.socket('rep');
 
+    module.close = function closeChaskiAssigner () {
+        chaskiAssigner.close();
+    }
+
     chaskiAssigner.bind('tcp://*:' + constants.PORT_CHASKI_ASSIGNER, function (err) {
         if (err) {
             throw err;
