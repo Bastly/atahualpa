@@ -29,7 +29,7 @@ module.exports = function(opts) {
             var messagePayload = JSON.parse(data.toString());
             var response = { ip : opts.ipChaski };
             chaskiAssigner.send(['200', JSON.stringify(response)]);
-            // opts.chaskiNotifier.notifyChaski(messagePayload.id);
+            opts.chaskiNotifier.notifyChaski(messagePayload.id, opts.ipChaski);
         });
     });
 

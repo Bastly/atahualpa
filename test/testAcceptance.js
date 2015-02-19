@@ -21,22 +21,28 @@ describe('Array', function() {
 describe('Request a chaski worker', function() {
     it('message response IP should be equal to CHASKI given IP', function (done) {
 
-        var message = 'hola';
         var chaskiNotifier = require('../worker/chaskiNotifier')
         ({
-            "ipChaski": config.chaski.ip, 
+            "ipChaski": config.chaski.ip,
             "verbose" : constants.LOG_LEVEL_ERROR
         });
         var chaskiAssigner = require('../worker/chaskiAssigner')
         ({
-            "ipChaski": config.chaski.ip, 
+            "ipChaski": config.chaski.ip,
             "chaskiNotifier": chaskiNotifier,
             "verbose" : constants.LOG_LEVEL_ERROR
+        });
+
+        var chaski = zmq.socket('rep');
+        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
+        chaski.on('message', function(result, data) {
+            var parsedResponse = JSON.parse(data);
+            console.log(result, data);
         });
         
         var client = zmq.socket('req');
         client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_CHASKI_ASSIGNER);
-        var dataToSend = { ip: config.client.ip };
+        var dataToSend = { id: config.client.id };
         client.send(JSON.stringify(dataToSend));
 
         client.on('message', function(result, data) {
@@ -45,7 +51,5 @@ describe('Request a chaski worker', function() {
             assert.equal(parsedResponse.ip, config.chaski.ip);
             done();
         });
-
-        
     });
 });
