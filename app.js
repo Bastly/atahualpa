@@ -1,11 +1,46 @@
 // DEPENDENCIES
 var bunyan = require('bunyan');
-var log = bunyan.createLogger({name: "atahualpa"});
+var log = bunyan.createLogger
+({
+    /*
+    name: "atahualpa"
+    */
+    name: "atahualpa",
+    streams: [
+        {
+            type: 'rotating-file',
+            path: '/var/log/atahualpa.log',
+            //path: '/var/log/atahualpa.log',
+            //level: 'info'
+        }
+    ]
+});
+
+//giving bunyan a chance to flush
+process.on('uncaughtException', function (err) {
+    // prevent infinite recursion
+    process.removeListener('uncaughtException', arguments.callee);
+
+    // bonus: log the exception
+    log.fatal(err);
+
+    if (typeof(log.streams[0]) !== 'object') return;
+
+    // throw the original exception once stream is closed
+    log.streams[0].stream.on('close', function(streamErr, stream) {
+        throw err;
+    });
+
+    // close stream, flush buffer to disk
+    log.streams[0].stream.end();
+});
+
+
 var constants = require('constants');
 
 if (!process.argv[2]) {
     log.info('Must give chaski info');
-    process.exit(9);
+    throw new Error('insuficient parameters given');
 }
 
 var IP_CHASKI = process.argv[2];
