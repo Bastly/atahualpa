@@ -19,13 +19,8 @@ domain.on('error', function(err){
 
     if (typeof(log.streams[0]) !== 'object') return;
 
-    console.log('err');
-    console.log(err);
     // throw the original exception once stream is closed
     log.streams[0].stream.on('close', function(streamErr, stream) {
-        console.log('err');
-        console.log(err);
-        console.log(streamErr);
         process.exit(1);
     });
 
