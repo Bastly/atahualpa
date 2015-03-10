@@ -4,9 +4,6 @@ var domain = require('domain').create();
 var bunyan = require('bunyan');
 var log = bunyan.createLogger
 ({
-    /*
-    name: "atahualpa"
-    */
     name: "atahualpa",
     streams: [
         {
@@ -17,8 +14,7 @@ var log = bunyan.createLogger
 
 //giving bunyan a chance to flush
 domain.on('error', function(err){
-    // prevent infinite recursion
-    // bonus: log the exception
+    // log the exception
     log.fatal(err);
 
     if (typeof(log.streams[0]) !== 'object') return;
@@ -51,22 +47,25 @@ domain.run(function(){
     var chaskiNotifier = require('./worker/chaskiNotifier')
     ({
         "ipChaski": IP_CHASKI,
-        "verbose" : constants.LOG_LEVEL_DEBUG
+        "log": log
     });
 
     var chaskiAssigner = require('./worker/chaskiAssigner')
     ({
         "ipChaski": IP_CHASKI,
-        "verbose" : constants.LOG_LEVEL_DEBUG, 
-        "chaskiNotifier": chaskiNotifier
+        "chaskiNotifier": chaskiNotifier,
+        "log": log
     });
 
     var messageForwarder = require('./worker/messageForwarder')
-    ();
+    ({
+        "log": log
+    });
 
     var messageReceiver = require('./worker/messageReceiver')
     ({
-        "messageForwarder": messageForwarder
+        "messageForwarder": messageForwarder,
+        "log": log
     });
 
 });

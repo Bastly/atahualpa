@@ -1,8 +1,10 @@
-module.exports = function(){
+module.exports = function(opts){
     
     var zmq = require('zmq');
     var constants = require('../constants');
     var messageForwarderPub = zmq.socket('pub'); // publishing channel to forward messages that should be handled by workers.
+    var logHandler = require('../logHandler');
+    var log = logHandler({name:'messageForwarder', log:opts.log});    
     
     messageForwarderPub.bind('tcp://*:' + constants.PORT_CHASKIES);
     var module = {};
