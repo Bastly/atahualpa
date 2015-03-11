@@ -4,9 +4,8 @@ module.exports = function(opts) {
     var constants = require('../constants');
     var module = {};
     var defaultParams = {};
-    var bunyan = require('bunyan');
-    var log = bunyan.createLogger({name: "atahualpa:chaskiAssigner"});
-    log.level(opts.verbose || 20);
+    var logHandler = require('../logHandler');
+    var log = logHandler({name:'chaskiAssigner', log:opts.log});    
 
     // CHECK
     if (!opts || !opts.chaskiNotifier || !opts.ipChaski) {

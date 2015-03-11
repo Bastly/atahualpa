@@ -4,16 +4,16 @@ module.exports = function(opts){
     var constants = require('../constants');
     var module = {};
     var defaultParams = {};
-    var bunyan = require('bunyan');
-    var log = bunyan.createLogger({name: "atahualpa:chaskiAssigner"});
-    log.level(opts.verbose || 20);
+    var logHandler = require('../logHandler');
+    var log = logHandler({name:'chaskiNotifier', log:opts.log});    
     
     // CHECK
     if(!opts || !opts.ipChaski){
+        log.error('given opts insuficient:' + opts);
         throw new Error('chaski IP or RANGE IPS required');
     }
     
-    // initialize
+    //initialize
     var ipChaski = opts.ipChaski;
     var chaskiChannelNotifierReq = zmq.socket('req');
 
@@ -35,5 +35,5 @@ module.exports = function(opts){
     };
 
     return module;
-}
+};
 
