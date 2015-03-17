@@ -30,7 +30,7 @@ domain.on('error', function(err){
 
 domain.run(function(){
 
-    var constants = require('constants');
+    var constants = require('bastly_constants');
 
     if (!process.argv[2]) {
         log.fatal('Must give chaski info');

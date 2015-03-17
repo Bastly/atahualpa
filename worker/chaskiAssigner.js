@@ -1,7 +1,7 @@
 module.exports = function(opts) {
 
     var zmq = require('zmq');
-    var constants = require('../constants');
+    var constants = require('bastly_constants');
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
@@ -13,12 +13,11 @@ module.exports = function(opts) {
         throw new Error('chaski notifier required');
     }
 
-    // initialize
     var chaskiAssigner = zmq.socket('rep');
 
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
-    }
+    };
 
     chaskiAssigner.bind('tcp://*:' + constants.PORT_CHASKI_ASSIGNER, function (err) {
         if (err) {

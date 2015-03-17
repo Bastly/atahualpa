@@ -5,7 +5,7 @@ module.exports = function(opts){
     }
     
     var zmq = require('zmq');
-    var constants = require('./../constants');
+    var constants = require('bastly_constants');
     var messageReceiverRep = zmq.socket('rep'); // Receives messages from clients, replyies ACK and forwards the message
     var logHandler = require('../logHandler');
     var log = logHandler({name:'messageReceiver', log:opts.log});    
@@ -19,4 +19,4 @@ module.exports = function(opts){
     
     var module = {};
     return module;
-}
+};

@@ -1,7 +1,7 @@
 module.exports = function(opts){
     
     var zmq = require('zmq');
-    var constants = require('../constants');
+    var constants = require('bastly_constants');
     var messageForwarderPub = zmq.socket('pub'); // publishing channel to forward messages that should be handled by workers.
     var logHandler = require('../logHandler');
     var log = logHandler({name:'messageForwarder', log:opts.log});    
@@ -11,7 +11,7 @@ module.exports = function(opts){
     
     module.send = function send(params){
         messageForwarderPub.send(params);
-    }
+    };
     
     return module;
-}
+};

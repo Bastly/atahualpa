@@ -1,7 +1,7 @@
 module.exports = function(opts){
     
     var zmq = require('zmq');
-    var constants = require('../constants');
+    var constants = require('bastly_constants');
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
