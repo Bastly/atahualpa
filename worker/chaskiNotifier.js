@@ -17,7 +17,7 @@ module.exports = function(opts){
     var ipChaski = opts.ipChaski;
     var chaskiChannelNotifierZero = zmq.socket('req');
     var chaskiChannelNotifierSocketio = zmq.socket('req');
-    log.info('connecting to ip: ', ip, 'will try:','tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
+    log.info('connecting to ip: ', ipChaski, 'will try:','tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
     chaskiChannelNotifierZero.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
     chaskiChannelNotifierSocketio.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ_SOCKET_IO);
 
