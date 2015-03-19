@@ -10,6 +10,8 @@ module.exports = function(opts){
     var module = {};
     
     module.send = function send(params){
+        
+        log.info('sending message to chaskies message');
         messageForwarderPub.send(params);
     };
     

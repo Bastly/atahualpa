@@ -13,7 +13,11 @@ module.exports = function(opts){
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
     
     messageReceiverRep.on('message', function(channelId, message){
+        log.info('message got:' + message.toString );
         messageReceiverRep.send(['200', '{"message": "ACK"}']);
+        log.info('message ACK');
+        
+        log.info('forwarding message');
         opts.messageForwarder.send([channelId, message]);
     });
     
