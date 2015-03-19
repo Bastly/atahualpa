@@ -6,7 +6,7 @@ module.exports = function(opts){
     var logHandler = require('../logHandler');
     var log = logHandler({name:'messageForwarder', log:opts.log});    
     
-    messageForwarderPub.bind('tcp://*:' + constants.PORT_CHASKIES);
+    messageForwarderPub.bind('tcp://*:' + constants.PORT_PUB_SUB_ATAHUALPA_CHASKI_MESSAGES);
     var module = {};
     
     module.send = function send(params){
