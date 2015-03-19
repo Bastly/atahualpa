@@ -10,7 +10,7 @@ module.exports = function(opts){
     var logHandler = require('../logHandler');
     var log = logHandler({name:'messageReceiver', log:opts.log});    
     
-    messageReceiverRep.bind('tcp://*:' + constants.PORT_MESSAGE_RECEIVER);
+    messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
     
     messageReceiverRep.on('message', function(channelId, message){
         messageReceiverRep.send(['200', '{"message": "ACK"}']);

@@ -16,8 +16,8 @@ describe('Request a chaski worker', function() {
         var chaski = zmq.socket('rep');
         var client = zmq.socket('req');
 
-        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
-        client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_CHASKI_ASSIGNER);
+        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
+        client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER);
 
         var chaskiNotifier = require('../worker/chaskiNotifier')
         ({
@@ -60,8 +60,8 @@ describe('Notify chaski a new client', function() {
         var chaski = zmq.socket('rep');
         var client = zmq.socket('req');
 
-        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
-        client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_CHASKI_ASSIGNER);
+        chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
+        client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER);
 
         var chaskiNotifier = require('../worker/chaskiNotifier')
         ({

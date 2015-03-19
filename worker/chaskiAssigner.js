@@ -19,12 +19,12 @@ module.exports = function(opts) {
         chaskiAssigner.close();
     };
 
-    chaskiAssigner.bind('tcp://*:' + constants.PORT_CHASKI_ASSIGNER, function (err) {
+    chaskiAssigner.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER, function (err) {
         if (err) {
             throw err;
         }
 
-        log.info('chaski assigner bound listening on', constants.PORT_CHASKI_ASSIGNER);
+        log.info('chaski assigner bound listening on', constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER);
     
         chaskiAssigner.on('message', function(data) {
             log.info(chaskiAssigner.identity + ': received ' + data.toString());

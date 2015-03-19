@@ -15,23 +15,21 @@ module.exports = function(opts){
     
     //initialize
     var ipChaski = opts.ipChaski;
-    var chaskiChannelNotifierReq = zmq.socket('req');
+    var chaskiChannelNotifierZero = zmq.socket('req');
+    var chaskiChannelNotifierSocketio = zmq.socket('req');
+    log.info('connecting to ip: ', ip, 'will try:','tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
+    chaskiChannelNotifierZero.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
+    chaskiChannelNotifierSocketio.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ_SOCKET_IO);
 
     module.close = function closeChaskiNotifier () {
-        chaskiChannelNotifierReq.close();
+        chaskiChannelNotifierZero.close();
+        chaskiChannelNotifierSocketio.close();
     };
 
     module.notifyChaski = function notifyChaski (id, ip) {
-        log.info('connecting to ip: ', ip, 'will try:','tcp://' + ipChaski + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
-        chaskiChannelNotifierReq.connect('tcp://' + ipChaski + ':' + constants.PORT_CHASKI_CHANNEL_NOTIFIER);
         var message = {id : id};
-        if (ip) {
-            chaskiChannelNotifierReq.send(JSON.stringify(message));
-            log.info('sending to given IP');
-        } else {
-            chaskiChannelNotifierReq.send(JSON.stringify(message));
-            log.info('sending to default IP');
-        }
+            chaskiChannelNotifierSocketio.send(JSON.stringify(message));
+            chaskiChannelNotifierZero.send(JSON.stringify(message));
     };
 
     return module;
