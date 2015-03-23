@@ -1,6 +1,7 @@
 // DEPENDENCIES
 var domain = require('domain').create();
 
+
 var bunyan = require('bunyan');
 var log = bunyan.createLogger
 ({
