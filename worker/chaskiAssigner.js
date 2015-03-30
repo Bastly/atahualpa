@@ -8,9 +8,9 @@ module.exports = function(opts) {
     var log = logHandler({name:'chaskiAssigner', log:opts.log});    
 
     // CHECK
-    if (!opts || !opts.chaskiNotifier || !opts.ipChaski) {
+    if (!opts || !opts.busOps || !opts.ipChaski) {
         log.error('given opts insuficient:' + opts);
-        throw new Error('chaski notifier required');
+        throw new Error('busOps required');
     }
 
     var chaskiAssigner = zmq.socket('rep');
