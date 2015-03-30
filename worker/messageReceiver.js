@@ -1,7 +1,7 @@
 module.exports = function(opts){
     
-    if(!opts || !opts.messageForwarder){
-         throw new Error('message forwarder is needed');
+    if(!opts || !opts.busData){
+         throw new Error('bus data is needed');
     }
     
     var zmq = require('zmq');
@@ -18,7 +18,7 @@ module.exports = function(opts){
         log.info('message ACK');
         
         log.info('forwarding message');
-        opts.messageForwarder.send([channelId, message]);
+        opts.busData.send([channelId, message]);
     });
     
     var module = {};

@@ -40,7 +40,7 @@ domain.run(function(){
 
     var IP_CHASKI = process.argv[2];
 
-    var chaskiNotifier = require('./worker/chaskiNotifier')
+    var busOps = require('./worker/busOps')
     ({
         "ipChaski": IP_CHASKI,
         "log": log
@@ -53,14 +53,14 @@ domain.run(function(){
         "log": log
     });
 
-    var messageForwarder = require('./worker/messageForwarder')
+    var busData = require('./worker/busData')
     ({
         "log": log
     });
 
     var messageReceiver = require('./worker/messageReceiver')
     ({
-        "messageForwarder": messageForwarder,
+        "busData": busData,
         "log": log
     });
 
