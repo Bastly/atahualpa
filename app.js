@@ -49,7 +49,7 @@ domain.run(function(){
     var chaskiAssigner = require('./worker/chaskiAssigner')
     ({
         "ipChaski": IP_CHASKI,
-        "chaskiNotifier": chaskiNotifier,
+        "busOps": busOps,
         "log": log
     });
 

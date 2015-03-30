@@ -5,7 +5,7 @@ module.exports = function(opts){
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
-    var log = logHandler({name:'chaskiNotifier', log:opts.log});    
+    var log = logHandler({name:'busOps', log:opts.log});    
     
     // CHECK
     if(!opts || !opts.ipChaski){

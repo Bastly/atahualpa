@@ -19,7 +19,7 @@ describe('Request a chaski worker', function() {
         chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
         client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER);
 
-        var chaskiNotifier = require('../worker/chaskiNotifier')
+        var busOps = require('../worker/busOps')
         ({
             "ipChaski": config.chaski.ip,
             "verbose" : constants.LOG_LEVEL_ERROR
@@ -27,7 +27,7 @@ describe('Request a chaski worker', function() {
         var chaskiAssigner = require('../worker/chaskiAssigner')
         ({
             "ipChaski": config.chaski.ip,
-            "chaskiNotifier": chaskiNotifier,
+            "busOps": busOps,
             "verbose" : constants.LOG_LEVEL_ERROR
         });
 
@@ -46,7 +46,7 @@ describe('Request a chaski worker', function() {
 
             chaski.close();
             client.close();
-            chaskiNotifier.close();
+            busOps.close();
             chaskiAssigner.close();
             done();
         });
@@ -63,7 +63,7 @@ describe('Notify chaski a new client', function() {
         chaski.bind('tcp://'+ config.chaski.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
         client.connect('tcp://'+ config.client.ip + ':' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_REQUEST_WORKER);
 
-        var chaskiNotifier = require('../worker/chaskiNotifier')
+        var busOps = require('../worker/busOps')
         ({
             "ipChaski": config.chaski.ip,
             "verbose" : constants.LOG_LEVEL_ERROR
@@ -71,7 +71,7 @@ describe('Notify chaski a new client', function() {
         var chaskiAssigner = require('../worker/chaskiAssigner')
         ({
             "ipChaski": config.chaski.ip,
-            "chaskiNotifier": chaskiNotifier,
+            "busOps": busOps,
             "verbose" : constants.LOG_LEVEL_ERROR
         });
 
@@ -83,7 +83,7 @@ describe('Notify chaski a new client', function() {
             assert.equal(parsedResponse.id, config.client.id);
             chaski.close();
             client.close();
-            chaskiNotifier.close();
+            busOps.close();
             chaskiAssigner.close();
             done();
         });
