@@ -5,31 +5,27 @@ module.exports = function(opts){
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
-    var log = logHandler({name:'busOps', log:opts.log});    
     
     // CHECK
-    if(!opts || !opts.ipChaski){
+    if(!opts){
         log.error('given opts insuficient:' + opts);
         throw new Error('chaski IP or RANGE IPS required');
     }
     
+    var log = logHandler({name:'busOps', log:opts.log});    
+    
     //initialize
-    var ipChaski = opts.ipChaski;
-    var chaskiChannelNotifierZero = zmq.socket('req');
-    var chaskiChannelNotifierSocketio = zmq.socket('req');
-    log.info('connecting to ip: ', ipChaski, 'will try:','tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
-    chaskiChannelNotifierZero.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ);
-    chaskiChannelNotifierSocketio.connect('tcp://' + ipChaski + ':' + constants.PORT_REQ_REP_ATAHUALPA_CHASKI_CHANNEL_ASSIGN_ZEROMQ_SOCKET_IO);
+    var busOps = zmq.socket('pub');
+    var busOpsUrl = 'tcp://*:' + constants.PORT_PUB_SUB_ATAHUALPA_CHASKI_OPS;
+    log.info('binding busOps on', busOpsUrl);
+    busOps.bind(busOpsUrl);
 
-    module.close = function closeChaskiNotifier () {
-        chaskiChannelNotifierZero.close();
-        chaskiChannelNotifierSocketio.close();
+    module.close = function closeBusOps () {
+        busOps.close();
     };
 
-    module.notifyChaski = function notifyChaski (id, ip) {
-        var message = {id : id};
-            chaskiChannelNotifierSocketio.send(JSON.stringify(message));
-            chaskiChannelNotifierZero.send(JSON.stringify(message));
+    module.notifyChaski = function notifyChaski (chaskiId,to ) {
+        busOps.send([chaskiId, to]);
     };
 
     return module;

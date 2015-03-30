@@ -39,16 +39,26 @@ domain.run(function(){
     }
 
     var IP_CHASKI = process.argv[2];
+    
+    var chaskiZeromq = {
+        ip: IP_CHASKI,
+        id: constatns.CHASKI_TYPE_ZEROMQ
+    };
+    
+    var chaskiSocketio = {
+        ip: IP_CHASKI,
+        id: constatns.CHASKI_TYPE_SOCKETIO
+    };
 
     var busOps = require('./worker/busOps')
     ({
-        "ipChaski": IP_CHASKI,
         "log": log
     });
 
     var chaskiAssigner = require('./worker/chaskiAssigner')
     ({
-        "ipChaski": IP_CHASKI,
+        "chaskiZeromq": chaskiZeromq,
+        "chaskiSocketio": chaskiSocketio,
         "busOps": busOps,
         "log": log
     });
