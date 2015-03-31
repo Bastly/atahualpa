@@ -31,8 +31,6 @@ module.exports = function(opts) {
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
             log.info(chaskiAssigner.identity + ': received action' + action.toString());
             if(action.toString() == 'subscribe'){
-                console.log('type');
-                console.log(type.toString());
                 if(type.toString() == constants.CHASKI_TYPE_ZEROMQ){
                     response = { ip : opts.chaskiZeromq.ip };
                     assignedChaski = opts.chaskiZeromq.id;

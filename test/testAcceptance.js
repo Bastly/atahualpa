@@ -9,6 +9,7 @@ if(!config.chaskiZeromq.ip || !config.chaskiSocketio.ip) {
     process.exit(9);
 }
 
+
 describe('Request a chaski zeromq worker', function() {
 
     it('message response IP should be equal to CHASKI given IP', function (done) {
@@ -48,7 +49,7 @@ describe('Request a chaski zeromq worker', function() {
             var parsedResponse = JSON.parse(data.toString());
             assert.equal(result.toString(), '200');
             assert.equal(parsedResponse.ip, config.chaskiZeromq.ip);
-
+            //TODO if no messsage is gotten, the port remain open, they should be closed
             client.close();
             busOps.close();
             chaskiAssigner.close();

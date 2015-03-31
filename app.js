@@ -42,12 +42,12 @@ domain.run(function(){
     
     var chaskiZeromq = {
         ip: IP_CHASKI,
-        id: constatns.CHASKI_TYPE_ZEROMQ
+        id: constants.CHASKI_TYPE_ZEROMQ
     };
     
     var chaskiSocketio = {
         ip: IP_CHASKI,
-        id: constatns.CHASKI_TYPE_SOCKETIO
+        id: constants.CHASKI_TYPE_SOCKETIO
     };
 
     var busOps = require('./worker/busOps')

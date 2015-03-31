@@ -12,17 +12,17 @@ module.exports = function(opts){
     
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
     
-    messageReceiverRep.on('message', function(action, data){
-        log.info('message got');
+    messageReceiverRep.on('message', function(action, to, from, apikey, data){
+        log.info('message got', action.toString(), from.toString(), apikey.toString(), data.toString());
         //TODO we must check api keys eventually
         if(action == "send"){
             messageReceiverRep.send(['200', '{"message": "ACK"}']);
             log.info('message ACK');
             log.info('forwarding message');
-            opts.busData.send(data);
+            opts.busData.send([to, from, apikey, data]);
         }else{
             messageReceiverRep.send(['400', '{"message": "we only accept send actions here!"}']);
-            log.info('message noy valid received');
+            log.info('message not valid received');
         }
     });
     
