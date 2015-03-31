@@ -25,6 +25,7 @@ module.exports = function(opts){
     };
 
     module.notifyChaski = function notifyChaski (chaskiId,to ) {
+        log.info('notifiying chaski', chaskiId.toString(), 'of listen channel', to.toString() );
         busOps.send([chaskiId, to]);
     };
 

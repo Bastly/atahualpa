@@ -27,9 +27,9 @@ module.exports = function(opts) {
 
         log.info('chaski assigner bound listening on', chaskiAssignerUrl);
 
-        //    
+        //when a message is reached, if the action is to subscribe it assigns a chaski using its chaskiId
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
-            log.info(chaskiAssigner.identity + ': received action' + action.toString());
+            log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type);
             if(action.toString() == 'subscribe'){
                 if(type.toString() == constants.CHASKI_TYPE_ZEROMQ){
                     response = { ip : opts.chaskiZeromq.ip };
@@ -41,7 +41,8 @@ module.exports = function(opts) {
                 chaskiAssigner.send(['200', JSON.stringify(response)]);
                 opts.busOps.notifyChaski(assignedChaski, to);
             }else{
-                chaskiAssigner.send(['400', JSON.stringify({message:"action does not exist"})]);
+                log.info('action received does not exist', action.toString());
+                chaskiAssigner.send(['400', JSON.stringify({"message":"action does not exist"})]);
             }
         });
     });

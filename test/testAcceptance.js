@@ -43,9 +43,6 @@ describe('Request a chaski zeromq worker', function() {
         client.send(dataToSendForRequestingWoker);
 
         client.on('message', function (result, data) {
-            console.log('got message');
-            console.log(data.toString());
-            console.log(result.toString());
             var parsedResponse = JSON.parse(data.toString());
             assert.equal(result.toString(), '200');
             assert.equal(parsedResponse.ip, config.chaskiZeromq.ip);
