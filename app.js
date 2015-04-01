@@ -1,6 +1,7 @@
 // DEPENDENCIES
 var domain = require('domain').create();
 
+
 var bunyan = require('bunyan');
 var log = bunyan.createLogger
 ({
@@ -38,28 +39,38 @@ domain.run(function(){
     }
 
     var IP_CHASKI = process.argv[2];
+    
+    var chaskiZeromq = {
+        ip: IP_CHASKI,
+        id: constants.CHASKI_TYPE_ZEROMQ
+    };
+    
+    var chaskiSocketio = {
+        ip: IP_CHASKI,
+        id: constants.CHASKI_TYPE_SOCKETIO
+    };
 
-    var chaskiNotifier = require('./worker/chaskiNotifier')
+    var busOps = require('./worker/busOps')
     ({
-        "ipChaski": IP_CHASKI,
         "log": log
     });
 
     var chaskiAssigner = require('./worker/chaskiAssigner')
     ({
-        "ipChaski": IP_CHASKI,
-        "chaskiNotifier": chaskiNotifier,
+        "chaskiZeromq": chaskiZeromq,
+        "chaskiSocketio": chaskiSocketio,
+        "busOps": busOps,
         "log": log
     });
 
-    var messageForwarder = require('./worker/messageForwarder')
+    var busData = require('./worker/busData')
     ({
         "log": log
     });
 
     var messageReceiver = require('./worker/messageReceiver')
     ({
-        "messageForwarder": messageForwarder,
+        "busData": busData,
         "log": log
     });
 
