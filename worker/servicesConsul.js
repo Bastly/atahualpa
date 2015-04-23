@@ -7,7 +7,7 @@ module.exports = function(opts){
     var _ = require('underscore');
     var constants = require('bastly_constants');
     var logHandler = require('../logHandler');
-    var log = logHandler({name:'services', log:opts.log});
+    var log = logHandler({name:'servicesConsul', log:opts.log});
     var lastServiceCheck;
     log.info('quering services at', IP_CONSUL);
 
