@@ -7,10 +7,10 @@ module.exports = function(opts) {
     var logHandler = require('../logHandler');
     var log = logHandler({name:'chaskiAssigner', log:opts.log});    
 
-    // CHECK
-    if (!opts || !opts.busOps || !opts.IP_CONSUL) {
+    // CHECKS
+    if (!opts || !opts.busOps) {
         log.error('given opts insuficient:' + opts);
-        throw new Error('opts insuficient');
+        throw new Error('opts insuficient, missing busOps');
     }
     
     var service = require('./services')({log:log, IP_CONSUL: opts.IP_CONSUL});

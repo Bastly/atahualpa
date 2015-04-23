@@ -34,8 +34,7 @@ domain.run(function(){
     var constants = require('bastly_constants');
 
     if (!process.argv[2]) {
-        log.fatal('Must give consul ip');
-        throw new Error('insuficientarametersgiven');
+        log.info('Consul ip not given, will run with mock services');
     }
     var IP_CONSUL = process.argv[2];
 

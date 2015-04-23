@@ -1,14 +1,4 @@
 {
-    "chaskiZeromq": {
-        "ip": "127.0.0.1",
-        "id": "ZEROMQ",
-        "port": 1337
-    },
-    "chaskiSocketio": {
-        "ip": "127.0.0.1",
-        "id": "SOCKETIO",
-        "port": 1337
-    },
     "client": {
         "id": "AABBCCDDEEFFGG112233445566",
         "apiKey": "123456780",

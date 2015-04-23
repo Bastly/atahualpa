@@ -3,16 +3,23 @@ var assert = require('assert');
 var config = require('./config.json');
 var zmq = require('zmq');
 var constants = require('bastly_constants');
+var bunyan = require('bunyan');
+var log = bunyan.createLogger
+({
+    name: "atahualpa",
+    streams: [
+        {
+            path: '/var/log/atahualpa-test.log'
+        }
+    ]
+});
 
-if(!config.chaskiZeromq.ip || !config.chaskiSocketio.ip) {
-    console.log('Must give chaski info');
-    process.exit(9);
-}
+var ipPattern = new RegExp("(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)");
 
 
 describe('Request a chaski zeromq worker', function() {
 
-    it('message response IP should be equal to CHASKI given IP', function (done) {
+    it('message response IP should be a IP', function (done) {
 
         var client = zmq.socket('req');
 
@@ -20,14 +27,14 @@ describe('Request a chaski zeromq worker', function() {
 
         var busOps = require('../worker/busOps')
         ({
-            "verbose" : constants.LOG_LEVEL_ERROR
+            "verbose" : constants.LOG_LEVEL_ERROR,
+            log:log
         });
         var chaskiAssigner = require('../worker/chaskiAssigner')
         ({
-            "chaskiZeromq": config.chaskiZeromq,
-            "chaskiSocketio": config.chaskiSocketio,
             "busOps": busOps,
-            "verbose" : constants.LOG_LEVEL_ERROR
+            "verbose" : constants.LOG_LEVEL_ERROR,
+            log:log
         });
 
         
@@ -45,7 +52,7 @@ describe('Request a chaski zeromq worker', function() {
         client.on('message', function (result, data) {
             var parsedResponse = JSON.parse(data.toString());
             assert.equal(result.toString(), '200');
-            assert.equal(parsedResponse.ip, config.chaskiZeromq.ip);
+            assert.equal(true, ipPattern.test(parsedResponse.ip));
             //TODO if no messsage is gotten, the port remain open, they should be closed
             client.close();
             busOps.close();
