@@ -6,7 +6,9 @@ module.exports = function(opts){
     
     var zmq = require('zmq');
     var constants = require('bastly_constants');
-    var messageReceiverRep = zmq.socket('rep'); 
+    var messageReceiverRep = zmq.socket('rep');
+    var curacaCom = zmq.socket('req');
+    curacaCom.connect('tcp://' + opts.curacaIp + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
     var logHandler = require('../logHandler');
     var log = logHandler({name:'busData', log:opts.log});    
     
@@ -17,10 +19,16 @@ module.exports = function(opts){
         log.info('message got', action.toString(), from.toString(), apikey.toString(), data.toString());
         //TODO we must check api keys eventually
         if(action == "send"){
+            // check if allowed to send messages directly on redis
+            // if enough quota
+            curaca.send(constants.CURACA_TYPE_MESAGE, to, from, apikey);
+
             messageReceiverRep.send(['200', '{"message": "ACK"}']);
             log.info('message ACK');
             log.info('forwarding message', to, from, apikey);
             opts.busData.send([to, from, apikey, data]);
+            // else
+            //messageReceiverRep.send(['400', '{"message": "quota surpased"}']);
         }else{
             messageReceiverRep.send(['400', '{"message": "we only accept send actions here!"}']);
             log.info('message not valid received');

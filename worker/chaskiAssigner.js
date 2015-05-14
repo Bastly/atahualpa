@@ -16,6 +16,8 @@ module.exports = function(opts) {
     var service = require('./services')({log:log, IP_CONSUL: opts.IP_CONSUL});
 
     var chaskiAssigner = zmq.socket('rep');
+    var curacaCom = zmq.socket('req');
+    curacaCom.connect('tcp://' + opts.curacaIp + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
@@ -56,7 +58,12 @@ module.exports = function(opts) {
                         response = { ip: node.ip };
                         assignedChaski = node.id;
                         chaskiAssigner.send(['200', JSON.stringify(response)]);
+                        // inform chaski that has to listen to given channel cause a user will connect
                         opts.busOps.notifyChaski(assignedChaski, to);
+
+                        // notify security module (curaca) that new id is listening to  channel
+                        curacaCom.send(constants.CURACA_TYPE_SUBSCRIPTION, to, from, apiKey);
+                        
                         log.info('node found', node, 'for service', type.toString());
                     } else {
                         chaskiAssigner.send(['400', JSON.stringify({"message":"there is no available worker for: " + type.toString()})]);
