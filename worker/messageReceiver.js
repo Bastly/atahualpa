@@ -8,7 +8,7 @@ module.exports = function(opts){
     var constants = require('bastly_constants');
     var messageReceiverRep = zmq.socket('rep');
     var curacaCom = zmq.socket('req');
-    curacaCom.connect('tcp://' + opts.curacaIp + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
+    curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
     var logHandler = require('../logHandler');
     var log = logHandler({name:'busData', log:opts.log});    
     
@@ -20,7 +20,7 @@ module.exports = function(opts){
         //TODO we must check api keys eventually
         if(action == "send"){
             // check if allowed to send messages directly on redis
-            // if enough quota
+            // if enough quota and apikey exists
             curaca.send(constants.CURACA_TYPE_MESAGE, to, from, apikey);
 
             messageReceiverRep.send(['200', '{"message": "ACK"}']);

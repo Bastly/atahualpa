@@ -17,7 +17,7 @@ module.exports = function(opts) {
 
     var chaskiAssigner = zmq.socket('rep');
     var curacaCom = zmq.socket('req');
-    curacaCom.connect('tcp://' + opts.curacaIp + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
+    curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
