@@ -53,7 +53,7 @@ module.exports = function(opts) {
 
         //when a message is reached, if the action is to subscribe it assigns a chaski using its chaskiId
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
-            log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type.toString()));
+            log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type.toString());
             log.info('app key: ', apiKey.toString());
 
             if(action.toString() == 'subscribe'){
