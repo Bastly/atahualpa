@@ -5,7 +5,8 @@ module.exports = function(opts) {
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
-    var log = logHandler({name:'chaskiAssigner', log:opts.log});    
+    var log = logHandler({name:'chaskiAssigner', log:opts.log}); 
+    var apiKeyCheker = require('./apiKeyChecker');   
 
     // CHECKS
     if (!opts || !opts.busOps) {
@@ -51,6 +52,8 @@ module.exports = function(opts) {
         //when a message is reached, if the action is to subscribe it assigns a chaski using its chaskiId
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
             log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type);
+
+
             if(action.toString() == 'subscribe'){
                 service.getServices(true, function(services){
                     var node = getRandomService(services, type.toString());
