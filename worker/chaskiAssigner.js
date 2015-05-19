@@ -20,6 +20,8 @@ module.exports = function(opts) {
     var curacaCom = zmq.socket('req');
     curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
+    log.info('curacaCom listening connected to: ', 'tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
+
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
     };
