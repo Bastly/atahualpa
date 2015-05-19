@@ -21,7 +21,7 @@ module.exports = function(opts){
         if(action == "send"){
             // check if allowed to send messages directly on redis
             // if enough quota and apikey exists
-            curaca.send(constants.CURACA_TYPE_MESAGE, to, from, apikey);
+            curacaCom.send(constants.CURACA_TYPE_MESAGE, to, from, apikey);
 
             messageReceiverRep.send(['200', '{"message": "ACK"}']);
             log.info('message ACK');
