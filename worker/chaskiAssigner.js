@@ -53,7 +53,6 @@ module.exports = function(opts) {
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
             log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type);
 
-
             if(action.toString() == 'subscribe'){
                 service.getServices(true, function(services){
                     var node = getRandomService(services, type.toString());
