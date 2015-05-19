@@ -20,7 +20,7 @@ module.exports = function(opts) {
     var curacaCom = zmq.socket('req');
     curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
-    log.info('curacaCom listening connected to: ', 'tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
+    log.info('curacaCom connected to: ', 'tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
@@ -66,7 +66,7 @@ module.exports = function(opts) {
                         opts.busOps.notifyChaski(assignedChaski, to);
 
                         // notify security module (curaca) that new id is listening to  channel
-                        curacaCom.send(constants.CURACA_TYPE_SUBSCRIPTION, to, from, apiKey);
+                        curacaCom.send([constants.CURACA_TYPE_SUBSCRIPTION, to, from, apiKey]);
                         
                         log.info('node found', node, 'for service', type.toString());
                     } else {
