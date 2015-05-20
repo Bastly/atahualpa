@@ -11,6 +11,8 @@ module.exports = function(opts){
     curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
     var logHandler = require('../logHandler');
     var log = logHandler({name:'busData', log:opts.log});    
+    var redis = require("redis");
+    var client = redis.createClient(6379, opts.redis);
     
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
 
@@ -19,16 +21,24 @@ module.exports = function(opts){
         log.info('message got', action.toString(), from.toString(), apikey.toString(), data.toString());
         //TODO we must check api keys eventually
         if(action == "send"){
-            // check if allowed to send messages directly on redis
-            // if enough quota and apikey exists
-            curacaCom.send([constants.CURACA_TYPE_MESAGE, to, from, apikey]);
 
-            messageReceiverRep.send(['200', '{"message": "ACK"}']);
-            log.info('message ACK');
-            log.info('forwarding message', to, from, apikey);
-            opts.busData.send([to, from, apikey, data]);
-            // else
-            //messageReceiverRep.send(['400', '{"message": "quota surpased"}']);
+            client.get(['apikey:'+ apiKey], function (err, reply) { //check if key exists
+                if (reply){
+                    var keyparams = JSON.parse(reply);
+                    client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
+                        if (reply < keyparams.limit) { // still enough request
+                            curacaCom.send([constants.CURACA_TYPE_MESAGE, to, from, apikey]);
+                            messageReceiverRep.send(['200', '{"message": "ACK"}']);
+                            log.info('forwarding message', to, from, apikey);
+                            opts.busData.send([to, from, apikey, data]);
+                        } else {
+                             chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                        }
+                    });
+                } else {
+                    chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
+                }
+            });
         }else{
             messageReceiverRep.send(['400', '{"message": "we only accept send actions here!"}']);
             log.info('message not valid received');

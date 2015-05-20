@@ -69,6 +69,7 @@ domain.run(function(){
     ({
         "busData": busData,
         "curaca" : program.curaca,
+        "redis": program.redis,
         "log": log
     });
 
