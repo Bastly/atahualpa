@@ -56,6 +56,7 @@ domain.run(function(){
         "IP_CONSUL": program.consul,
         "curaca" : program.curaca,
         "busOps": busOps,
+        "redis": program.redis,
         "log": log
     });
 
