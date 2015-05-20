@@ -65,13 +65,13 @@ module.exports = function(opts) {
                         var keyparams = JSON.parse(reply);
                         client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
                             if (reply < keyparams.limit) { // still enough request
-                                getChaskiAndRespond();
+                                getChaskiAndRespond(type);
                             } else {
-                                 chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached"})]);
+                                 chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
                             }
                         });
                     } else {
-                        chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key"})]);
+                        chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
                     }
                 });
             }else{
@@ -81,7 +81,7 @@ module.exports = function(opts) {
         });
     });
 
-    function getChaskiAndRespond () {
+    function getChaskiAndRespond (type) {
         service.getServices(true, function(services){
             var node = getRandomService(services, type.toString());
             if(node){
