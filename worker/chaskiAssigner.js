@@ -55,6 +55,9 @@ module.exports = function(opts) {
 
         //when a message is reached, if the action is to subscribe it assigns a chaski using its chaskiId
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
+            var toAppended = apiKey + ":" + to;
+            var fromAppended = apiKey + ":" + from;
+
             log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type.toString());
             log.info('app key: ', apiKey.toString());
 
@@ -65,7 +68,7 @@ module.exports = function(opts) {
                         var keyparams = JSON.parse(reply);
                         client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
                             if (reply < keyparams.limit) { // still enough request
-                                getChaskiAndRespond(type);
+                                getChaskiAndRespond(type, toAppended, fromAppended, apiKey);
                             } else {
                                  chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
                             }
@@ -81,7 +84,7 @@ module.exports = function(opts) {
         });
     });
 
-    function getChaskiAndRespond (type) {
+    function getChaskiAndRespond (type, to, from, apiKey) {
         service.getServices(true, function(services){
             var node = getRandomService(services, type.toString());
             if(node){
