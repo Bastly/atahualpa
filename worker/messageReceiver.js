@@ -17,8 +17,8 @@ module.exports = function(opts){
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
 
     // Receives messages from clients, replyies ACK and forwards the message
-    messageReceiverRep.on('message', function(action, to, from, apikey, data){
-        log.info('message got', action.toString(), from.toString(), apikey.toString(), data.toString());
+    messageReceiverRep.on('message', function(action, to, from, apiKey, data){
+        log.info('message got', action.toString(), from.toString(), apiKey.toString(), data.toString());
         var fromAppend = apiKey + ':' + from;
         var toAppend = apiKey + ':' + to;
         //TODO we must check api keys eventually
@@ -29,10 +29,10 @@ module.exports = function(opts){
                     var keyparams = JSON.parse(reply);
                     client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
                         if (reply < keyparams.limit) { // still enough request
-                            curacaCom.send([constants.CURACA_TYPE_MESAGE, toAppend, fromAppend, apikey]);
+                            curacaCom.send([constants.CURACA_TYPE_MESAGE, toAppend, fromAppend, apiKey]);
                             messageReceiverRep.send(['200', '{"message": "ACK"}']);
-                            log.info('forwarding message', toAppend, fromAppend, apikey);
-                            opts.busData.send([toAppend, fromAppend, apikey, data]);
+                            log.info('forwarding message', toAppend, fromAppend, apiKey);
+                            opts.busData.send([toAppend, fromAppend, apiKey, data]);
                         } else {
                              chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
                         }

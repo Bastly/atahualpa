@@ -88,7 +88,7 @@ module.exports = function(opts) {
         service.getServices(true, function(services){
             var node = getRandomService(services, type.toString());
             if(node){
-                response = { ip: node.ip };
+                response = { workerIp: node.ip };
                 assignedChaski = node.id;
                 chaskiAssigner.send(['200', JSON.stringify(response)]);
                 // inform chaski that has to listen to given channel cause a user will connect
