@@ -31,10 +31,11 @@ module.exports = function(opts){
                         if (reply < keyparams.limit) { // still enough request
                             curacaCom.send([constants.CURACA_TYPE_MESAGE, toAppend, fromAppend, apiKey]);
                             messageReceiverRep.send(['200', '{"message": "ACK"}']);
-                            log.info('forwarding message', toAppend, fromAppend, apiKey);
+                            log.info('forwarding message', toAppend, fromAppend, apiKey, data);
                             opts.busData.send([toAppend, fromAppend, apiKey, data]);
                         } else {
-                             chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                            log.info('error forwarding mssg', toAppend, fromAppend, apiKey);
+                            chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
                         }
                     });
                 } else {
