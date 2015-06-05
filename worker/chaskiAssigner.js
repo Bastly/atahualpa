@@ -6,7 +6,6 @@ module.exports = function(opts) {
     var defaultParams = {};
     var logHandler = require('../logHandler');
     var log = logHandler({name:'chaskiAssigner', log:opts.log}); 
-    var apiKeyCheker = require('./apiKeyChecker');
     var redis = require("redis");
     var client = redis.createClient(6379, opts.redis);
 
