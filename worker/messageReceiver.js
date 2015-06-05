@@ -6,21 +6,42 @@ module.exports = function(opts){
     
     var zmq = require('zmq');
     var constants = require('bastly_constants');
-    var messageReceiverRep = zmq.socket('rep'); 
+    var messageReceiverRep = zmq.socket('rep');
+    var curacaCom = zmq.socket('req');
+    curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
     var logHandler = require('../logHandler');
     var log = logHandler({name:'busData', log:opts.log});    
+    var redis = require("redis");
+    var client = redis.createClient(6379, opts.redis);
     
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
 
     // Receives messages from clients, replyies ACK and forwards the message
-    messageReceiverRep.on('message', function(action, to, from, apikey, data){
-        log.info('message got', action.toString(), from.toString(), apikey.toString(), data.toString());
+    messageReceiverRep.on('message', function(action, to, from, apiKey, data){
+        log.info('message got', action.toString(), from.toString(), apiKey.toString(), data.toString());
+        var fromAppend = apiKey + ':' + from;
+        var toAppend = apiKey + ':' + to;
         //TODO we must check api keys eventually
         if(action == "send"){
-            messageReceiverRep.send(['200', '{"message": "ACK"}']);
-            log.info('message ACK');
-            log.info('forwarding message', to, from, apikey);
-            opts.busData.send([to, from, apikey, data]);
+
+            client.get(['apikey:'+ apiKey], function (err, reply) { //check if key exists
+                if (reply){
+                    var keyparams = JSON.parse(reply);
+                    client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
+                        if (reply < keyparams.limit) { // still enough request
+                            curacaCom.send([constants.CURACA_TYPE_MESAGE, toAppend, fromAppend, apiKey]);
+                            messageReceiverRep.send(['200', '{"message": "ACK"}']);
+                            log.info('forwarding message', toAppend, fromAppend, apiKey, data);
+                            opts.busData.send([toAppend, fromAppend, apiKey, data]);
+                        } else {
+                            log.info('error forwarding mssg', toAppend, fromAppend, apiKey);
+                            chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                        }
+                    });
+                } else {
+                    chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
+                }
+            });
         }else{
             messageReceiverRep.send(['400', '{"message": "we only accept send actions here!"}']);
             log.info('message not valid received');

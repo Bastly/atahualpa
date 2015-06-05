@@ -63,7 +63,11 @@ module.exports = function(opts){
     });
 
     //periodically update the services variable
-    setInterval(function(){checkServices(function(){log.info(module.alive, 'alive services');});}, 5000);
+    setInterval(function(){
+        checkServices(function (){
+            log.debug(module.alive, 'alive services');
+        });
+    }, 5000);
 
     module.getServices  = getServices;
     return module;

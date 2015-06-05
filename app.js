@@ -32,12 +32,19 @@ domain.on('error', function(err){
 domain.run(function(){
 
     var constants = require('bastly_constants');
+    var program = require('commander');
 
-    if (!process.argv[2]) {
-        log.info('Consul ip not given, will run with mock services');
-    }
-    var IP_CONSUL = process.argv[2];
+    program
+      .version('0.0.1')
+      .usage('atahualpa --redis <IP> --curaca <IP> --consul <IP>')
+      .option('-r, --redis <IP>', 'specify redis IP ', '127.0.0.1')
+      .option('-u, --curaca <IP>', 'specify curaca IP ', '127.0.0.1')
+      .option('-c, --consul <IP>', 'specify the consul ip', '127.0.0.1')
+      .parse(process.argv);
 
+    console.log('Running with redis ', program.redis);
+    console.log('Running with curaca on: ', program.curaca);
+    console.log('Running with consul ip on: ', program.consul);
 
     var busOps = require('./worker/busOps')
     ({
@@ -46,8 +53,10 @@ domain.run(function(){
 
     var chaskiAssigner = require('./worker/chaskiAssigner')
     ({
-        "IP_CONSUL": IP_CONSUL,
+        "IP_CONSUL": program.consul,
+        "curaca" : program.curaca,
         "busOps": busOps,
+        "redis": program.redis,
         "log": log
     });
 
@@ -59,6 +68,8 @@ domain.run(function(){
     var messageReceiver = require('./worker/messageReceiver')
     ({
         "busData": busData,
+        "curaca" : program.curaca,
+        "redis": program.redis,
         "log": log
     });
 

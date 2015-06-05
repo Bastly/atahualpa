@@ -5,7 +5,9 @@ module.exports = function(opts) {
     var module = {};
     var defaultParams = {};
     var logHandler = require('../logHandler');
-    var log = logHandler({name:'chaskiAssigner', log:opts.log});    
+    var log = logHandler({name:'chaskiAssigner', log:opts.log}); 
+    var redis = require("redis");
+    var client = redis.createClient(6379, opts.redis);
 
     // CHECKS
     if (!opts || !opts.busOps) {
@@ -16,6 +18,10 @@ module.exports = function(opts) {
     var service = require('./services')({log:log, IP_CONSUL: opts.IP_CONSUL});
 
     var chaskiAssigner = zmq.socket('rep');
+    var curacaCom = zmq.socket('req');
+    curacaCom.connect('tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
+
+    log.info('curacaCom connected to: ', 'tcp://' + opts.curaca + ':' + constants.PORT_REQ_REP_ATAHUALPA_CURACA_COMM);
 
     module.close = function closeChaskiAssigner () {
         chaskiAssigner.close();
@@ -48,18 +54,26 @@ module.exports = function(opts) {
 
         //when a message is reached, if the action is to subscribe it assigns a chaski using its chaskiId
         chaskiAssigner.on('message', function(action, to, from, apiKey, type) {
-            log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type);
+            var toAppended = apiKey + ":" + to;
+            var fromAppended = apiKey + ":" + from;
+
+            log.info(chaskiAssigner.identity, ': received action', action.toString(), 'with chaskiType', type.toString());
+            log.info('app key: ', apiKey.toString());
+
             if(action.toString() == 'subscribe'){
-                service.getServices(true, function(services){
-                    var node = getRandomService(services, type.toString());
-                    if(node){
-                        response = { ip: node.ip };
-                        assignedChaski = node.id;
-                        chaskiAssigner.send(['200', JSON.stringify(response)]);
-                        opts.busOps.notifyChaski(assignedChaski, to);
-                        log.info('node found', node, 'for service', type.toString());
+
+                client.get(['apikey:'+ apiKey], function (err, reply) { //check if key exists
+                    if (reply){
+                        var keyparams = JSON.parse(reply);
+                        client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
+                            if (reply < keyparams.limit) { // still enough request
+                                getChaskiAndRespond(type, toAppended, fromAppended, apiKey);
+                            } else {
+                                 chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                            }
+                        });
                     } else {
-                        chaskiAssigner.send(['400', JSON.stringify({"message":"there is no available worker for: " + type.toString()})]);
+                        chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
                     }
                 });
             }else{
@@ -68,6 +82,26 @@ module.exports = function(opts) {
             }
         });
     });
+
+    function getChaskiAndRespond (type, to, from, apiKey) {
+        service.getServices(true, function(services){
+            var node = getRandomService(services, type.toString());
+            if(node){
+                response = { workerIp: node.ip };
+                assignedChaski = node.id;
+                chaskiAssigner.send(['200', JSON.stringify(response)]);
+                // inform chaski that has to listen to given channel cause a user will connect
+                opts.busOps.notifyChaski(assignedChaski, to);
+
+                // notify security module (curaca) that new id is listening to  channel
+                curacaCom.send([constants.CURACA_TYPE_SUBSCRIPTION, to, from, apiKey]);
+                
+                log.info('node found', node, 'for service', type.toString());
+            } else {
+                chaskiAssigner.send(['400', JSON.stringify({"message":"there is no available worker for: " + type.toString()})]);
+            }
+        });
+    }
 
     return module;
 };
