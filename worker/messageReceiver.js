@@ -35,11 +35,11 @@ module.exports = function(opts){
                             opts.busData.send([toAppend, fromAppend, apiKey, data]);
                         } else {
                             log.info('error forwarding mssg', toAppend, fromAppend, apiKey);
-                            chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                            messageReceiverRep.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
                         }
                     });
                 } else {
-                    chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
+                    messageReceiverRep.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
                 }
             });
         }else{
