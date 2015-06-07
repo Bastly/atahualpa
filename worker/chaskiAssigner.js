@@ -61,21 +61,30 @@ module.exports = function(opts) {
             log.info('app key: ', apiKey.toString());
 
             if(action.toString() == 'subscribe'){
-
-                client.get(['apikey:'+ apiKey], function (err, reply) { //check if key exists
-                    if (reply){
-                        var keyparams = JSON.parse(reply);
-                        client.get('APIKEY:COUNTER:'+ apiKey, function (err, reply) {
-                            if (reply < keyparams.limit) { // still enough request
-                                getChaskiAndRespond(type, toAppended, fromAppended, apiKey);
-                            } else {
-                                 chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
-                            }
-                        });
-                    } else {
+            client.get(['apikey:'+ apiKey], function (err, reply) { //check if key exists
+		log.info('APIKEY:exists:'+ apiKey);
+		log.info(err);
+		log.info(reply);
+                if (reply){
+                    var keyparams = JSON.parse(reply);
+		    var apiKeyLimit = parseInt(keyparams.limit);
+			log.info(apiKeyLimit);
+                    client.get('APIKEY:COUNTER:'+ apiKey, function (err, counterCount) {
+			counterCount = parseInt(counterCount);
+			log.info(apiKeyLimit, counterCount);
+                        if (counterCount < apiKeyLimit) { // still enough request
+				log.info('assiging new channel for chaskie', toAppended);
+				getChaskiAndRespond(type, toAppended, fromAppended, apiKey);
+                        } else {
+                            log.info('error forwarding mssg', toAppended, fromAppended, apiKey);
+				 chaskiAssigner.send(['404', JSON.stringify({"message":"key limit reached, go to your profile to upgrade."})]);
+                        }
+                    });
+                } else {
                         chaskiAssigner.send(['404', JSON.stringify({"message":"invalid api key, please check your API KEY value."})]);
-                    }
-                });
+                }
+            });
+
             }else{
                 log.info('action received does not exist', action.toString());
                 chaskiAssigner.send(['400', JSON.stringify({"message":"action does not exist"})]);
