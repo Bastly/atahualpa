@@ -42,7 +42,9 @@ module.exports = function(opts){
                         var serviceInNodeIsAlive = true;
                         _.each(node.Checks, function(check){
                             if(check.Status !== 'passing'){
-                                serviceInNodeIsAlive = false;
+				if(check.CheckID !== "serfHealth"){
+                                	serviceInNodeIsAlive = false;
+				}
                             }
                         });
                         if (serviceInNodeIsAlive) {
