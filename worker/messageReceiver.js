@@ -12,7 +12,7 @@ module.exports = function(opts){
     var logHandler = require('../logHandler');
     var log = logHandler({name:'busData', log:opts.log});    
     var redis = require("redis");
-    var client = redis.createClient(6379, opts.redis);
+    var client = redis.createClient(6379, opts.db);
     
     messageReceiverRep.bind('tcp://*:' + constants.PORT_REQ_REP_ATAHUALPA_CLIENT_MESSAGES);
 

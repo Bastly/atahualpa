@@ -7,7 +7,7 @@ module.exports = function(opts) {
     var logHandler = require('../logHandler');
     var log = logHandler({name:'chaskiAssigner', log:opts.log}); 
     var redis = require("redis");
-    var client = redis.createClient(6379, opts.redis);
+    var client = redis.createClient(6379, opts.db);
 
     // CHECKS
     if (!opts || !opts.busOps) {
