@@ -36,13 +36,13 @@ domain.run(function(){
 
     program
       .version('0.0.1')
-      .usage('atahualpa --redis <IP> --curaca <IP> --consul <IP>')
-      .option('-r, --redis <IP>', 'specify redis IP ', '127.0.0.1')
+      .usage('atahualpa --db <IP> --curaca <IP> --consul <IP>')
+      .option('-d, --db <IP>', 'specify db IP ', '127.0.0.1')
       .option('-u, --curaca <IP>', 'specify curaca IP ', '127.0.0.1')
       .option('-c, --consul <IP>', 'specify the consul ip', '127.0.0.1')
       .parse(process.argv);
 
-    console.log('Running with redis ', program.redis);
+    console.log('Running with db ', program.db);
     console.log('Running with curaca on: ', program.curaca);
     console.log('Running with consul ip on: ', program.consul);
 
@@ -56,7 +56,7 @@ domain.run(function(){
         "IP_CONSUL": program.consul,
         "curaca" : program.curaca,
         "busOps": busOps,
-        "redis": program.redis,
+        "db": program.db,
         "log": log
     });
 
@@ -69,7 +69,7 @@ domain.run(function(){
     ({
         "busData": busData,
         "curaca" : program.curaca,
-        "redis": program.redis,
+        "db": program.db,
         "log": log
     });
 
